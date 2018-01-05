@@ -1,0 +1,138 @@
+deflogin off
+defshell "/bin/bash"
+hardstatus alwayslastline
+#hardstatus string
+#'%{= kG}       #clear all attribute, write in ansi black (background) and ansi green Bold (foreground color)
+#[              #beginning of machine section
+#%{+b r}        #color in Ansi red bold
+#%H             #hostname of the system
+#%l             #load of the system
+#%{-}           #revert back to previous color (green bold here)
+#]              #end of machine section
+# 
+#[              #beginning of window section
+#%=             #use all available space
+#%{= kw}        #clear all attribute, write in ansi black (background) and ansi white (foreground)
+#%?%-Lw         #diplay only if %-Lw is non empty -  all window and name before the current one centered at the current window.
+#%?%{r}(%{W}    #display only if %{r}(%{W} is not empty - red color - opening parenthesis - white bold color
+#%n*            #window number - followed by a *
+#%f             #current windows flag (see http://aperiodic.net/screen/window_flags)
+#%t             #current windows title
+#%?(%u)         #diplay (%u) if not empty %u= all others user on this window (usefull on multiuser situation)
+#%?%{r})%{w}    #display only if %{r})%{w} is not empty - red color - closing parenthesis - white color
+#%?%+Lw         #display only if %+Lw is not empty - all windows numbers and name starting with the window after the current one centered at the current window
+#%?%=           #use all remaining space (if there are still some)
+#%{g}           #green color
+#]              #closing window section
+ 
+#[              #beginning of time section
+#%{B}           #color in ansi blue Bold
+#%Y-%m-%d       #full year number - month number - day number
+#%{W}           #color in ansi white bold
+#%c             #current time HH:MM in 24h format
+#%{g}           #color in green
+#]'             #end of time section
+hardstatus string '%{= kg}[%{+b r} %H - %l %{-}][%= %{= kw}%?%-Lw%?%{r}(%{W}%n *%f %t%?(%u)%?%{r})%{w}%?%+Lw%?%= %{g}][%{B} %Y-%m-%d %{W}%c %{g}]'
+
+# Default screens
+# note: cannot automatically cd to a directory - as they are ksh builtin and not external command
+# screen -t bin        0 top
+
+# select by default screen 0
+select 0
+# Default screens
+screen -t shell1        0
+screen -t shell2        1
+
+# skip the startup message
+startup_message off
+
+# Ctrl-Tab - does not work on gnome terminal
+bindkey "^[[27;5;9~" next
+
+# Ctrl-Shift-Tab - does not work on gnome terminal
+bindkey "^[[27;6;9~" prev
+
+# terminfo and termcap for nice 256 color terminal
+# allow bold colors - necessary for some reason
+attrcolor b ".I"
+# tell screen how to set colors. AB = background, AF=foreground
+termcapinfo xterm 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
+# erase background with current bg color
+#defbce "on" 
+#
+# même hack que sur screen lorsqu'on veut profiter du scroll du terminal (xterm
+# ...)
+set -g terminal-overrides 'xterm*:smcup@:rmcup@'
+#
+# # c'est un minimum (defaut 2000)
+set-option -g history-limit 100000
+
+# locker la session après inactivité (en s)
+# set -g lock-after-time 3600
+# # pour que le lock marche sous linux (apt-get install vlock)
+# set -g lock-command vlock
+#
+# # il faut choisir un derivé de screen, 256 couleurs c'est bien !
+# set -g default-terminal "screen-256color"
+#
+# # pour ceux qui n'ont pas laché la souris
+# set -g mouse-select-pane on
+# setw -g mode-mouse on
+#
+# # ca peut etre utile ...
+# set -g status-utf8 on
+# setw -g utf8 on
+#
+# # Pour etre alerté sur un changement dans une autre fenêtre
+# setw -g monitor-activity on
+# #set -g visual-activity on
+# #set -g visual-bell on
+#
+# # numéroter a partir de 1, pratique pour l'accès direct
+# set -g base-index 1
+#
+# # repercuter le contenu de la fenetre dans la barre de titre
+# # reference des string : man tmux (status-left)
+# set -g set-titles on
+# set -g set-titles-string '#H #W #T' # host window command
+#
+#
+# #########
+# # theme #
+# #########
+# # exprimez votre créativité ici !
+# # pour les string : man tmux (status-left)
+#
+# # barre un peu plus discrete
+# set -g status-bg default
+# set -g status-fg green
+# setw -g window-status-current-bg default
+# setw -g window-status-current-fg white
+# setw -g window-status-alert-attr default
+# setw -g window-status-alert-fg yellow
+#
+# set -g pane-active-border-fg green
+# set -g pane-active-border-bg black
+# set -g pane-border-fg white
+# set -g pane-border-bg black
+#
+# set -g message-fg black
+# set -g message-bg green
+#
+# # exemples de barre d'état 
+# #set -g status-left '#[fg=red]#H#[fg=green]:#[fg=white]#S
+# #[fg=green]][#[default]'
+# #set -g status-right '#[fg=green]][#[fg=white] #T #[fg=green]][
+# #[fg=blue]%Y-%m-%d #[fg=white]%H:%M#[default]'
+#
+# #set -g status-left '#[fg=red]#H#[fg=green]:#[fg=white]#S
+# #[fg=green]][#[default]'
+# #set -g status-right '#[fg=green]][ #[fg=blue]%Y-%m-%d
+# #[fg=white]%H:%M#[default]'
+#
+# #set -g status-left '#[fg=green](#S) #(whoami)@#H#[default]'
+# #set -g status-right '#[fg=yellow]#(cut -d " " -f 1-3 /proc/loadavg)#[default]
+# #[fg=blue]%H:%M#[default]'
+#
+# #set -g status-right "#[fg=yellow]#(uptime | cut -d ',' -f 2-)"
