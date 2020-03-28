@@ -47,4 +47,6 @@ export LESS_TERMCAP_us=$'\E[04;38;5;146m' # begin underline
 # pour trouver le numéro de la souris, faite xinput list
 # source: https://doc.ubuntu-fr.org/touchpad
 # source: https://wiki.ubuntu.com/DebuggingTouchpadDetection
-xinput set-prop 10 "Device Enabled" 0
+xinput set-prop 14 "Device Enabled" 0
+
+export PATH="$HOME/.cargo/bin:$PATH"

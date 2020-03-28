@@ -52,7 +52,11 @@ fi
 #Vous pouvez mélanger les couleur du code Ps code comme 1;34;42 
 #pour trouver les valeurs possible, rechercher "prompting" dans la page de manuel de bash, ainsi que les codes de dates de "strftime"
 #export PS1=$'\E[1;31m'`logname`@`hostname -s`$'\E[0m:'$'\E[1;35m$PWD'$'\E[0m>'
-export PS1=$'\e[1;35m\u@\h $0 v\V\e[0m : \e[0;33m\D{%a %d %B %G} - \A\e[0m \n\e[0;35m\w'$'\e[0m\n\$ '
+#export PS1=$'\e[1;35m\u@\h $0 v\V\e[0m : \e[0;33m\D{%a %d %B %G} - \A\e[0m \n\e[0;35m\w'$'\e[0m\n\$ '
+
+# powerline bash vient du site https://gitlab.com/bersace/powerline.bash
+. ${HOME}/devzone/bash_config/powerline.bash
+PROMPT_COMMAND='__update_ps1 $?'
 
 #tmux attach
 #if [[ -z $TMUX ]]; then
