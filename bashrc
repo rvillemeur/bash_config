@@ -1,5 +1,5 @@
 # If not running interactively, don't do anything
-[ -z "$PS1" ] && return
+#[ -z "$PS1" ] && return
 
 # make less more friendly for non-text input files, see lesspipe(1)
 #[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
@@ -15,7 +15,7 @@
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
-   eval "`dircolors -b`"
+   test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
    alias ls='ls --color=auto'
    alias dir='dir --color=auto'
    alias vdir='vdir --color=auto'
@@ -62,3 +62,13 @@ PROMPT_COMMAND='__update_ps1 $?'
 #if [[ -z $TMUX ]]; then
 #  tmux attach-session || tmux new-session
 #fi
+
+set -o vi
+#dbus_status=$(service dbus status)
+#if [[ $dbus_status = *"is not running"* ]]; then
+#  sudo service dbus --full-restart
+#fi
+
+export DISPLAY=$(grep -m 1 nameserver /etc/resolv.conf | awk '{print $2}'):0.0
+
+#kmymomey&

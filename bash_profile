@@ -47,6 +47,10 @@ export LESS_TERMCAP_us=$'\E[04;38;5;146m' # begin underline
 # pour trouver le numéro de la souris, faite xinput list
 # source: https://doc.ubuntu-fr.org/touchpad
 # source: https://wiki.ubuntu.com/DebuggingTouchpadDetection
-xinput set-prop 14 "Device Enabled" 0
+#xinput set-prop 14 "Device Enabled" 0
+
+if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
+    tmux attach -t default || tmux new -s default
+fi
 
 export PATH="$HOME/.cargo/bin:$PATH"
