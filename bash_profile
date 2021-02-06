@@ -1,3 +1,4 @@
+echo "inside bash_profile"
 # .bash_profile
 
 # Get the aliases and functions
@@ -49,8 +50,9 @@ export LESS_TERMCAP_us=$'\E[04;38;5;146m' # begin underline
 # source: https://wiki.ubuntu.com/DebuggingTouchpadDetection
 #xinput set-prop 14 "Device Enabled" 0
 
+echo "starting tmux"
 if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
     tmux attach -t default || tmux new -s default
 fi
 
-export PATH="$HOME/.cargo/bin:$PATH"
+source "$HOME/.cargo/env"

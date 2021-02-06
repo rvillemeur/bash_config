@@ -1,3 +1,4 @@
+#echo "inside bashrc"
 # If not running interactively, don't do anything
 #[ -z "$PS1" ] && return
 
@@ -29,6 +30,9 @@
 alias ll='ls -l'
 alias la='ls -A'
 alias l='ls -CF'
+
+#mc alias under windows terminal
+alias mc='mc --no-x11'
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
@@ -86,11 +90,19 @@ PROMPT_COMMAND='__update_ps1 $?'
 #fi
 
 set -o vi
-#dbus_status=$(service dbus status)
-#if [[ $dbus_status = *"is not running"* ]]; then
-#  sudo service dbus --full-restart
-#fi
+export VISUAL=vim
+export EDITOR="$VISUAL"
+
+# starting dbus for kmymoney
+kdbus_status=$(service dbus status)
+if [[ $dbus_status = *"is not running"* ]]; then
+  sudo service dbus --full-restart
+fi
 
 export DISPLAY=$(grep -m 1 nameserver /etc/resolv.conf | awk '{print $2}'):0.0
 
 #kmymomey&
+source "$HOME/.cargo/env"
+# Install Ruby Gems to ~/gems
+export GEM_HOME="$HOME/gems"
+export PATH="$HOME/gems/bin:$PATH"
