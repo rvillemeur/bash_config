@@ -1,0 +1,12 @@
+[user]
+    email = renaud.devillemeur@tuta.io
+    name = renaud de villemeur
+[core]
+    editor = vim
+    whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
+[diff]
+    tool = vimdiff
+[diftool]
+    prompt = false
+[merge]
+    tool = vimdiff
