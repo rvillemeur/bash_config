@@ -99,7 +99,7 @@ if [[ $dbus_status = *"is not running"* ]]; then
   sudo service dbus --full-restart
 fi
 
-export DISPLAY=$(grep -m 1 nameserver /etc/resolv.conf | awk '{print $2}'):0.0
+#export DISPLAY=$(grep -m 1 nameserver /etc/resolv.conf | awk '{print $2}'):0.0
 
 #kmymomey&
 source "$HOME/.cargo/env"
