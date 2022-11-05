@@ -85,24 +85,10 @@ fi
 PROMPT_COMMAND='__update_ps1 $?'
 
 #tmux attach
-#if [[ -z $TMUX ]]; then
-#  tmux attach-session || tmux new-session
-#fi
+if [[ -z $TMUX ]]; then
+  tmux attach-session || tmux new-session
+fi
 
 set -o vi
 export VISUAL=vim
 export EDITOR="$VISUAL"
-
-# starting dbus for kmymoney
-kdbus_status=$(service dbus status)
-if [[ $dbus_status = *"is not running"* ]]; then
-  sudo service dbus --full-restart
-fi
-
-#export DISPLAY=$(grep -m 1 nameserver /etc/resolv.conf | awk '{print $2}'):0.0
-
-#kmymomey&
-source "$HOME/.cargo/env"
-# Install Ruby Gems to ~/gems
-export GEM_HOME="$HOME/gems"
-export PATH="$HOME/gems/bin:$PATH"
