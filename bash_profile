@@ -1,4 +1,3 @@
-echo "inside bash_profile"
 # .bash_profile
 
 # Get the aliases and functions
@@ -8,12 +7,11 @@ fi
 
 # User specific environment and startup programs
 export PATH=/opt/local/bin:/opt/local/sbin:$PATH
-#PATH=$PATH:$HOME/bin
-#export PATH
+PATH=$PATH:$HOME/devzone/bin
+export PATH
 
 # vim et MacVim par défaut
 set -o vi
-#alias vim=/Applications/MacVim.app/Contents/bin/vim
 
 # définition des alias
 alias ls='ls -G -p'
@@ -44,15 +42,3 @@ export LESS_TERMCAP_so=$'\E[38;5;246m'    # begin standout-mode - info box
 export LESS_TERMCAP_ue=$'\E[0m'           # end underline
 export LESS_TERMCAP_us=$'\E[04;38;5;146m' # begin underline
 
-# désactive la souris sur portable HP
-# pour trouver le numéro de la souris, faite xinput list
-# source: https://doc.ubuntu-fr.org/touchpad
-# source: https://wiki.ubuntu.com/DebuggingTouchpadDetection
-#xinput set-prop 14 "Device Enabled" 0
-
-echo "starting tmux"
-if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
-    tmux attach -t default || tmux new -s default
-fi
-
-source "$HOME/.cargo/env"
