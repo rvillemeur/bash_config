@@ -5,34 +5,39 @@
 # make less more friendly for non-text input files, see lesspipe(1)
 #[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
+# paramétrage de less
+# Less Colors for Man Pages
+export LESS_TERMCAP_mb=$'\E[01;31m'       # begin blinking
+export LESS_TERMCAP_md=$'\E[01;38;5;74m'  # begin bold
+export LESS_TERMCAP_me=$'\E[0m'           # end mode
+export LESS_TERMCAP_se=$'\E[0m'           # end standout-mode
+export LESS_TERMCAP_so=$'\E[38;5;246m'    # begin standout-mode - info box
+export LESS_TERMCAP_ue=$'\E[0m'           # end underline
+export LESS_TERMCAP_us=$'\E[04;38;5;146m' # begin underline
+
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
 
-#if [ -f ~/.bash_aliases ]; then
-#    . ~/.bash_aliases
-#fi
+# paramétrage de l'historique bash
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+export HISTTIMEFORMAT='%F %T '
+export HISTCONTROL=$HISTCONTROL${HISTCONTROL+,}ignoredups
+export HISTCONTROL=ignoreboth
+export HISTIGNORE='ls -l:pwd:history:ls:vim'
+#pour ne plus avoir d'historique
+#export HISTSIZE=0
 
-# enable color support of ls and also add handy aliases
-#if [ -x /usr/bin/dircolors ]; then
-   test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-   alias ls='ls --color=auto'
-   alias dir='dir --color=auto'
-   alias vdir='vdir --color=auto'
+# append to the history file, don't overwrite it
+shopt -s histappend
 
-   alias grep='grep --color=auto'
-   alias fgrep='fgrep --color=auto'
-   alias egrep='egrep --color=auto'
-#fi
-
-# some more ls aliases
-alias ll='ls -l'
-alias la='ls -A'
-alias l='ls -CF'
-
-#mc alias under windows terminal
-alias mc='mc --no-x11'
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
@@ -41,27 +46,6 @@ if [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
 fi
 
-SSH_ENV=$HOME/.ssh/environment
-
-# start the ssh-agent
-function start_agent {
-    echo "Initializing new SSH agent..."
-    # spawn ssh-agent
-    /usr/bin/ssh-agent | sed 's/^echo/#echo/' > "${SSH_ENV}"
-    echo succeeded
-    chmod 600 "${SSH_ENV}"
-    . "${SSH_ENV}" > /dev/null
-    /usr/bin/ssh-add
-}
-
-if [ -f "${SSH_ENV}" ]; then
-     . "${SSH_ENV}" > /dev/null
-     ps -ef | grep ${SSH_AGENT_PID} | grep ssh-agent$ > /dev/null || {
-        start_agent;
-    }
-else
-    start_agent;
-fi
 
 #L'instruction du terminal pour personnaliser la couleur est ESC [ Ps m => ou Ps représente la couleur que nous voulons voir. Il peut se composer de style de fonte, couleur de premier plan et couleur d'arrière plan.
 
@@ -84,11 +68,37 @@ fi
 . ${HOME}/devzone/bash_config/powerline.bash
 PROMPT_COMMAND='__update_ps1 $?'
 
+SSH_ENV=$HOME/.ssh/environment
+
+# start the ssh-agent
+function start_agent {
+    echo "Initializing new SSH agent from bashrc..."
+    # spawn ssh-agent
+    ssh-agent | sed 's/^echo/#echo/' > "${SSH_ENV}"
+    echo succeeded
+    chmod 600 "${SSH_ENV}"
+    . "${SSH_ENV}" > /dev/null
+    ssh-add
+}
+
+if [ -f "${SSH_ENV}" ]; then
+    echo "check SSH_ENV from bashrc"
+     . "${SSH_ENV}" > /dev/null
+     ps -ef | grep ${SSH_AGENT_PID} | grep ssh-agent$ > /dev/null || {
+        start_agent;
+    }
+else
+    echo "start agent"
+    start_agent;
+fi
+
 #tmux attach
-if [[ -z $TMUX ]]; then
+if [[ -z $TMUX ]]
+then
   tmux attach-session || tmux new-session
 fi
 
 set -o vi
 export VISUAL=vim
 export EDITOR="$VISUAL"
+
