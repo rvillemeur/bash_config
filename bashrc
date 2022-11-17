@@ -1,6 +1,6 @@
 #echo "inside bashrc"
 # If not running interactively, don't do anything
-#[ -z "$PS1" ] && return
+[ -z "$PS1" ] && return
 
 # make less more friendly for non-text input files, see lesspipe(1)
 #[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
@@ -81,7 +81,9 @@ function start_agent {
     ssh-add
 }
 
-if [ -f "${SSH_ENV}" ]; then
+
+if [[ -f "${SSH_ENV}" ]] # test if file exist
+then
      . "${SSH_ENV}" > /dev/null
      ps -ef | grep ${SSH_AGENT_PID} | grep ssh-agent$ > /dev/null || {
         start_agent;
