@@ -65,8 +65,19 @@ fi
 #export PS1=$'\e[1;35m\u@\h $0 v\V\e[0m : \e[0;33m\D{%a %d %B %G} - \A\e[0m \n\e[0;35m\w'$'\e[0m\n\$ '
 
 # powerline bash vient du site https://gitlab.com/bersace/powerline.bash
-. ${HOME}/devzone/bash_config/powerline.bash
+POWERLINE_ICONS=icons-in-terminal
+. ${HOME}/devzone/bash_config/powerline.bash/powerline.bash
 PROMPT_COMMAND='__update_ps1 $?'
+
+
+#add vim if running a subshell from vim
+vim_prompt() {
+  if [ ! -z $VIMRUNTIME ]; then
+    echo "vim ";
+  fi
+}
+
+#PS1='$(vim_prompt)$ '
 
 SSH_ENV=$HOME/.ssh/environment
 

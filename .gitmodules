@@ -1,0 +1,6 @@
+[submodule "powerline.bash"]
+	path = powerline.bash
+	url = https://gitlab.com/bersace/powerline.bash.git
+[submodule "icons-in-terminal"]
+	path = icons-in-terminal
+	url = https://github.com/sebastiencs/icons-in-terminal/
