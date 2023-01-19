@@ -4,3 +4,6 @@
 [submodule "icons-in-terminal"]
 	path = icons-in-terminal
 	url = https://github.com/sebastiencs/icons-in-terminal/
+[submodule "choose"]
+	path = choose
+	url = https://github.com/tmonjalo/choose.git

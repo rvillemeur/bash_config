@@ -26,14 +26,21 @@ fi
 # paramétrage de l'historique bash
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 export HISTTIMEFORMAT='%F %T '
-export HISTCONTROL=$HISTCONTROL${HISTCONTROL+,}ignoredups
-export HISTCONTROL=ignoreboth
 export HISTIGNORE='ls -l:pwd:history:ls:vim'
+
+# to keep bash history while using tmux
+# avoid duplicates..
+export HISTCONTROL=ignoredups:erasedups
+
+# append history entries..
+shopt -s histappend
+
+# After each command, save and reload history
+export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+
 #pour ne plus avoir d'historique
 #export HISTSIZE=0
 
-# append to the history file, don't overwrite it
-shopt -s histappend
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
