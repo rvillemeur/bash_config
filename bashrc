@@ -73,8 +73,8 @@ fi
 #export PS1=$'\e[1;35m\u@\h $0 v\V\e[0m : \e[0;33m\D{%a %d %B %G} - \A\e[0m \n\e[0;35m\w'$'\e[0m\n\$ '
 
 # powerline bash vient du site https://gitlab.com/bersace/powerline.bash
-source ~/.local/share/icons-in-terminal/icons_bash.sh
-POWERLINE_ICONS=icons-in-terminal
+#source ~/.local/share/icons-in-terminal/icons_bash.sh
+#POWERLINE_ICONS=icons-in-terminal
 . ${HOME}/devzone/bash_config/powerline.bash/powerline.bash
 POWERLINE_SEGMENTS="logo ${POWERLINE_SEGMENTS}"
 PROMPT_COMMAND='__update_ps1 $?'
