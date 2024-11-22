@@ -122,5 +122,7 @@ fi
 
 set -o vi
 export VISUAL=vim
+export SSH_ASKPASS=ksshaskpass
+export SSH_ASKPASS_REQUIRE=prefer
 export EDITOR="$VISUAL"
 
