@@ -1,4 +1,5 @@
 #echo "inside bashrc"
+
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
@@ -36,8 +37,8 @@ export HISTCONTROL=ignoredups:erasedups
 shopt -s histappend
 
 # After each command, save and reload history
-#export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
-export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
+export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+#export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
 
 #pour ne plus avoir d'historique
 #export HISTSIZE=0
@@ -81,13 +82,13 @@ PROMPT_COMMAND='__update_ps1 $?'
 
 
 #add vim if running a subshell from vim
-vim_prompt() {
-  if [ ! -z $VIMRUNTIME ]; then
-    echo "vim ";
-  fi
-}
+#vim_prompt() {
+#  if [ ! -z $VIMRUNTIME ]; then
+#    echo "inside vim ";
+#  fi
+#}
 
-#PS1='$(vim_prompt)$ '
+#export PS1='$(vim_prompt)$ '
 
 SSH_ENV=$HOME/.ssh/environment
 
