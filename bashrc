@@ -75,7 +75,12 @@ fi
 
 # powerline bash vient du site https://gitlab.com/bersace/powerline.bash
 #source ~/.local/share/icons-in-terminal/icons_bash.sh
-#POWERLINE_ICONS=icons-in-terminal
+#declare -A POWERLINE_ICONS_OVERRIDES
+POWERLINE_ICONS_OVERRIDES=(
+    [sep]=$'\uE0BC'
+    [sep-fin]=$'uE0BD'
+)
+POWERLINE_ICONS=icons-in-terminal
 . ${HOME}/devzone/bash_config/powerline.bash/powerline.bash
 POWERLINE_SEGMENTS="logo ${POWERLINE_SEGMENTS}"
 PROMPT_COMMAND='__update_ps1 $?'
@@ -94,6 +99,9 @@ SSH_ENV=$HOME/.ssh/environment
 
 # start the ssh-agent
 function start_agent {
+# define ssh specific var
+    export SSH_ASKPASS=ksshaskpass
+    export SSH_ASKPASS_REQUIRE=prefer
     echo "Initializing new SSH agent from bashrc..."
     # spawn ssh-agent
     ssh-agent | sed 's/^echo/#echo/' > "${SSH_ENV}"
@@ -103,8 +111,8 @@ function start_agent {
     ssh-add
 }
 
-
-if [[ -f "${SSH_ENV}" ]] # test if file exist
+# test if file exist and we're not in a podman container
+if [[ -f "${SSH_ENV}"  && -z $container ]]
 then
      . "${SSH_ENV}" > /dev/null
      ps -ef | grep ${SSH_AGENT_PID} | grep ssh-agent$ > /dev/null || {
@@ -123,7 +131,5 @@ fi
 
 set -o vi
 export VISUAL=vim
-export SSH_ASKPASS=ksshaskpass
-export SSH_ASKPASS_REQUIRE=prefer
 export EDITOR="$VISUAL"
 

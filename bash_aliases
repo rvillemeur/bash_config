@@ -15,5 +15,5 @@ alias ll='ls -hlrt'
 alias la='ls -A'
 alias l='ls -CF'
 
-#mc alias under windows terminal
-alias mc='mc --no-x11'
+#mc alias under windows terminal and without color
+alias mc='mc -b --no-x11'
