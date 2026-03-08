@@ -13,7 +13,7 @@ for range in $(fc-match --format='%{charset}\n' "$1"); do
 #    Extracts the ending value by removing everything before (and including) the -.
 #  - seq "0x${range%-*}" "0x${range#*-}":
 #    Generates a sequence of numbers between the start and end values (in hexadecimal format).
-Generates a sequence of numbers between the start and end values (in hexadecimal format).
+#Generates a sequence of numbers between the start and end values (in hexadecimal format).
     for n in $(seq "0x${range%-*}" "0x${range#*-}"); do
         printf "%04x\n" "$n"
     done
