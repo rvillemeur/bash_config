@@ -17,3 +17,12 @@ alias l='ls -CF'
 
 #mc alias under windows terminal and without color
 alias mc='mc -b --no-x11'
+
+# use vimdiff instead of traditional diff for git
+git() {
+  if [[ "$1" == "diff" ]]; then
+    command git difftool "${@:2}"
+  else
+    command git "$@"
+  fi
+}
