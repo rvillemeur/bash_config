@@ -111,16 +111,15 @@ function start_agent {
     ssh-add
 }
 
-# test if file exist and we're not in a podman container
-if [[ -f "${SSH_ENV}"  && ! -f /run/.containerenv ]]
-then
-     . "${SSH_ENV}" > /dev/null
-     ps -ef | grep ${SSH_AGENT_PID} | grep ssh-agent$ > /dev/null || {
+if [[ ! -f /run/.containerenv ]]; then
+    if [[ -f "${SSH_ENV}" ]]; then
+        . "${SSH_ENV}" > /dev/null
+        ps -ef | grep ${SSH_AGENT_PID} | grep ssh-agent$ > /dev/null || {
+            start_agent;
+        }
+    else
         start_agent;
-    }
-else
-    echo "start agent"
-    start_agent;
+    fi
 fi
 
 #tmux attach
