@@ -15,6 +15,9 @@ alias ll='ls -hlrt'
 alias la='ls -A'
 alias l='ls -CF'
 
+# claude in a container
+alias cclaude='~/devzone/Podman/claude/dev-env.sh'
+
 #mc alias under windows terminal and without color
 alias mc='mc -b --no-x11'
 

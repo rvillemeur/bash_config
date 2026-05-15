@@ -26,8 +26,11 @@ fi
 
 # paramétrage de l'historique bash
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-export HISTTIMEFORMAT='%F %T '
+# https://stackoverflow.com/questions/9457233/unlimited-bash-history
 export HISTIGNORE='ls -l:pwd:history:ls:vim'
+export HISTFILESIZE=2000
+export HISTSIZE=1000
+export HISTTIMEFORMAT="[%F %T] "
 
 # to keep bash history while using tmux
 # avoid duplicates..
@@ -36,12 +39,9 @@ export HISTCONTROL=ignoredups:erasedups
 # append history entries..
 shopt -s histappend
 
-# After each command, save and reload history
-export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
-#export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
-
-#pour ne plus avoir d'historique
-#export HISTSIZE=0
+# Change the file location because certain bash sessions truncate .bash_history file upon close.
+# http://superuser.com/questions/575479/bash-history-truncated-to-500-lines-on-each-login
+export HISTFILE=~/.bash_eternal_history
 
 
 # check the window size after each command and, if necessary,
@@ -83,7 +83,7 @@ POWERLINE_ICONS_OVERRIDES=(
 POWERLINE_ICONS=icons-in-terminal
 . ${HOME}/devzone/bash_config/powerline.bash/powerline.bash
 POWERLINE_SEGMENTS="logo ${POWERLINE_SEGMENTS}"
-PROMPT_COMMAND='__update_ps1 $?'
+PROMPT_COMMAND='__exit=$?; history -a; history -c; history -r; __update_ps1 $__exit'
 
 
 #add vim if running a subshell from vim
