@@ -10,6 +10,8 @@
    alias egrep='egrep --color=auto'
 #fi
 
+alias vi=nvim
+
 # some more ls aliases
 alias ll='ls -hlrt'
 alias la='ls -A'
