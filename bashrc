@@ -21,7 +21,7 @@ export LESS_TERMCAP_us=$'\E[04;38;5;146m' # begin underline
 # ~/.bash_aliases, instead of adding them here directly.
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
 if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
+  . ~/.bash_aliases
 fi
 
 # paramétrage de l'historique bash
@@ -43,7 +43,6 @@ shopt -s histappend
 # http://superuser.com/questions/575479/bash-history-truncated-to-500-lines-on-each-login
 export HISTFILE=~/.bash_eternal_history
 
-
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
@@ -52,9 +51,8 @@ shopt -s checkwinsize
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
 if [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
+  . /etc/bash_completion
 fi
-
 
 #L'instruction du terminal pour personnaliser la couleur est ESC [ Ps m => ou Ps représente la couleur que nous voulons voir. Il peut se composer de style de fonte, couleur de premier plan et couleur d'arrière plan.
 
@@ -68,7 +66,7 @@ fi
 #
 #Les couleurs traditionnelles sont: (black, red, green, yellow, blue, magenta, cyan, white) Les code couleurs de premier plan vont de 30 to 37 #Les code couleurs d'arrière plan vont de 40 to 47
 #
-#Vous pouvez mélanger les couleur du code Ps code comme 1;34;42 
+#Vous pouvez mélanger les couleur du code Ps code comme 1;34;42
 #pour trouver les valeurs possible, rechercher "prompting" dans la page de manuel de bash, ainsi que les codes de dates de "strftime"
 #export PS1=$'\E[1;31m'`logname`@`hostname -s`$'\E[0m:'$'\E[1;35m$PWD'$'\E[0m>'
 #export PS1=$'\e[1;35m\u@\h $0 v\V\e[0m : \e[0;33m\D{%a %d %B %G} - \A\e[0m \n\e[0;35m\w'$'\e[0m\n\$ '
@@ -77,14 +75,13 @@ fi
 #source ~/.local/share/icons-in-terminal/icons_bash.sh
 #declare -A POWERLINE_ICONS_OVERRIDES
 POWERLINE_ICONS_OVERRIDES=(
-    [sep]=$'\uE0BC'
-    [sep-fin]=$'uE0BD'
+  [sep]=$'\uE0BC'
+  [sep - fin]=$'uE0BD'
 )
 POWERLINE_ICONS=icons-in-terminal
 . ${HOME}/devzone/bash_config/powerline.bash/powerline.bash
 POWERLINE_SEGMENTS="logo ${POWERLINE_SEGMENTS}"
 PROMPT_COMMAND='__exit=$?; history -a; history -c; history -r; __update_ps1 $__exit'
-
 
 #add vim if running a subshell from vim
 #vim_prompt() {
@@ -99,37 +96,36 @@ SSH_ENV=$HOME/.ssh/environment
 
 # start the ssh-agent
 function start_agent {
-# define ssh specific var
-    export SSH_ASKPASS=ksshaskpass
-    export SSH_ASKPASS_REQUIRE=prefer
-    echo "Initializing new SSH agent from bashrc..."
-    # spawn ssh-agent
-    ssh-agent | sed 's/^echo/#echo/' > "${SSH_ENV}"
-    echo succeeded
-    chmod 600 "${SSH_ENV}"
-    . "${SSH_ENV}" > /dev/null
-    ssh-add
+  # define ssh specific var
+  export SSH_ASKPASS=ksshaskpass
+  export SSH_ASKPASS_REQUIRE=prefer
+  echo "Initializing new SSH agent from bashrc..."
+  # spawn ssh-agent
+  ssh-agent | sed 's/^echo/#echo/' >"${SSH_ENV}"
+  echo succeeded
+  chmod 600 "${SSH_ENV}"
+  . "${SSH_ENV}" >/dev/null
+  ssh-add
 }
 
 if [[ ! -f /run/.containerenv ]]; then
-    if [[ -f "${SSH_ENV}" ]]; then
-        . "${SSH_ENV}" > /dev/null
-        ps -ef | grep ${SSH_AGENT_PID} | grep ssh-agent$ > /dev/null || {
-            start_agent;
-        }
-    else
-        start_agent;
-    fi
+  if [[ -f "${SSH_ENV}" ]]; then
+    . "${SSH_ENV}" >/dev/null
+    ps -ef | grep ${SSH_AGENT_PID} | grep ssh-agent$ >/dev/null || {
+      start_agent
+    }
+  else
+    start_agent
+  fi
 fi
 
 #tmux attach
-if [[ -z $TMUX ]]
-then
+if [[ -z $TMUX ]]; then
   tmux attach-session || tmux new-session
 fi
 
 set -o vi
-export VISUAL=vim
+export VISUAL=vi
 export EDITOR="$VISUAL"
 
 export PATH="$HOME/.local/bin:$PATH"
