@@ -69,10 +69,15 @@ install.sh
 ## One palette everywhere
 
 Konsole, tmux and neovim all sit on tokyonight **moon**, background `#222436`.
-Getting there matters: Konsole shipped the **night** background `#1a1b26`, so the
-terminal was a shade darker than the panes tmux paints, and every row tmux left
-at `bg=default` -- the pane border line above the status bar in particular --
-showed that darker colour as a band across the window.
+Konsole shipped the **night** background `#1a1b26`, a shade darker than the panes
+tmux paints, which showed on any row tmux left at `bg=default` -- the pane border
+line above the status bar in particular. tmux no longer leaves that row at
+`bg=default`, so the two fixes are independent, and matching the palettes still
+matters for everything tmux does not paint itself: a pane running a program with
+its own background, and Konsole's own chrome.
+
+The black band under the status line was *not* this mismatch, though it looked
+exactly like one. It was a stale `status-bg` -- quirk 4 below.
 
 `konsole/TokyoNightMoon.colorscheme` is the moon palette in Konsole's format and
 `konsole/tokyo night.profile` selects it. Konsole reads both at startup, so a
@@ -99,7 +104,7 @@ a broken colour chain behind.
 indicator, the pomodoro timer and the clock. Its look is reproduced natively
 instead.
 
-Three tmux quirks cost real debugging time here and are documented at the top of
+Four tmux quirks cost real debugging time here and are documented at the top of
 the status section of `tmux/tmux.conf`:
 
 1. `#{?cond,a,b}` splits on its first unescaped comma, so inside a conditional
@@ -108,6 +113,14 @@ the status section of `tmux/tmux.conf`:
    non-breaking space (U+00A0).
 3. `window-status-separator` is inert once `status-format[0]` is overridden, so
    each window format carries its own padding.
+4. `status-bg` and `status-fg` still exist in tmux 3.7 and still beat
+   `status-style`. While `status-bg` was `black`, tmux painted every status
+   cell that no `#[]` directive had coloured with SGR 37/40, so the segments
+   looked right and the gaps between them did not — which reads as a terminal
+   palette mismatch and sends you to the wrong side of the problem. It also
+   outlives the line that set it: sourcing a config cannot clear an option the
+   config no longer mentions, so a server started months ago keeps the old
+   value. Both are reset to `default` explicitly for that reason.
 
 ## Claude Code
 
