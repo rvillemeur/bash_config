@@ -28,6 +28,8 @@ What it puts in `$HOME`:
 | `~/.gitconfig` | `git/gitconfig` |
 | `~/.tmux.conf` | `tmux/tmux.conf` |
 | `~/.screenrc` | `screen/screenrc` |
+| `~/.local/share/konsole/TokyoNightMoon.colorscheme` | `konsole/TokyoNightMoon.colorscheme` |
+| `~/.local/share/konsole/tokyo night.profile` | `konsole/tokyo night.profile` |
 
 Plus two **copies** (not links) in `~/.claude`, from `claude/launchers/`. See
 [Claude Code](#claude-code) below.
@@ -39,6 +41,7 @@ bash/      bashrc, bash_profile, bash_logout, bash_aliases
 tmux/      tmux.conf and the scripts its status bar calls
 claude/    Claude Code status line, launchers, reference settings.json
 git/       gitconfig
+konsole/   Konsole profile and the tokyonight-moon colour scheme
 screen/    screenrc
 fonts/     Nerd Font install notes and glyph-listing scripts
 tools/     colour and palette demo scripts
@@ -62,6 +65,23 @@ install.sh
   `vendor/icons-in-terminal/install.sh` once.
 
 [tpm]: https://github.com/tmux-plugins/tpm
+
+## One palette everywhere
+
+Konsole, tmux and neovim all sit on tokyonight **moon**, background `#222436`.
+Getting there matters: Konsole shipped the **night** background `#1a1b26`, so the
+terminal was a shade darker than the panes tmux paints, and every row tmux left
+at `bg=default` -- the pane border line above the status bar in particular --
+showed that darker colour as a band across the window.
+
+`konsole/TokyoNightMoon.colorscheme` is the moon palette in Konsole's format and
+`konsole/tokyo night.profile` selects it. Konsole reads both at startup, so a
+running window keeps the old colours: open a new window, or reload the profile
+from *Settings > Edit Current Profile*.
+
+Editing the profile from Konsole's GUI can replace the symlink with a regular
+file. Re-running `install.sh` puts the link back and keeps the GUI's version as
+`<target>.bak.<timestamp>`.
 
 ## tmux status bar
 

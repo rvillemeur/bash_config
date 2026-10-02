@@ -21,6 +21,8 @@ bash/bash_aliases:.bash_aliases
 git/gitconfig:.gitconfig
 tmux/tmux.conf:.tmux.conf
 screen/screenrc:.screenrc
+konsole/TokyoNightMoon.colorscheme:.local/share/konsole/TokyoNightMoon.colorscheme
+konsole/tokyo night.profile:.local/share/konsole/tokyo night.profile
 "
 
 # copies into ~/.claude, which is shared with the Claude Code container: a
