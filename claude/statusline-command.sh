@@ -46,6 +46,12 @@ BG_RATE7="\e[48;5;243m"
 #   • background = background color of the NEXT segment
 ARROW="\xee\x82\xb0"   #
 
+# Powerline LEFT-pointing solid triangle (U+E0B2 )
+# Used by the right-hand group, where the segments grow leftwards: there the
+# separator belongs on the left edge of each segment, pointing back at the one
+# before it.
+LEFT_ARROW="\xee\x82\xb2"   # 
+
 # ---------------------------------------------------------------------------
 # shorten_pwd <path>
 #   Replaces $HOME prefix with ~, then if the result is longer than 40 chars
@@ -104,6 +110,36 @@ shorten_pwd() {
     result="${result}/${parts[$((n-1))]}"
 
     printf '%s' "$result"
+}
+
+# ---------------------------------------------------------------------------
+# visible_width <string>
+#   Expands the \e and \x escapes the segment strings are written with, drops
+#   every SGR colour sequence, and counts what is left. Every glyph we print is
+#   single-width, so the character count is the column count. Needed because
+#   the right-hand group is positioned by padding, which has to know how wide
+#   the two groups actually render.
+# ---------------------------------------------------------------------------
+visible_width() {
+    local stripped
+    stripped=$(printf '%b' "$1" | sed $'s/\x1b\\[[0-9;]*m//g')
+    printf '%s' "${#stripped}"
+}
+
+# ---------------------------------------------------------------------------
+# term_cols
+#   Claude Code exports COLUMNS for the status line command and it matches the
+#   pane width exactly; tput is the fallback for a manual run from a shell.
+# ---------------------------------------------------------------------------
+term_cols() {
+    local cols="${COLUMNS:-}"
+    case $cols in
+        '' | *[!0-9]*) cols=$(tput cols 2>/dev/null) ;;
+    esac
+    case $cols in
+        '' | *[!0-9]* | 0) cols=80 ;;
+    esac
+    printf '%s' "$cols"
 }
 
 # ---------------------------------------------------------------------------
@@ -290,11 +326,21 @@ fi
 # "dark-fg" colour that visually matches it (used only for the trailing arrow).
 # ---------------------------------------------------------------------------
 
-# Parallel arrays: index → (text, bg, fg, dark_fg_for_trailing_arrow)
+# Parallel arrays: index -> (text, bg, fg, dark_fg_for_trailing_arrow)
+# Two groups now: the identity of the shell on the left, the Claude usage
+# meters on the right, pushed to the far edge and separated by blank space.
 seg_text=()
 seg_bg=()
 seg_fg=()
 seg_trailing_fg=()   # foreground colour that visually matches the segment bg
+
+# Same four arrays for the right-hand group.
+rseg_text=()
+rseg_bg=()
+rseg_fg=()
+rseg_trailing_fg=()
+
+# --- Left group -----------------------------------------------------------
 
 # Fedora distro icon — always present (U+F30A )
 seg_text+=( $'\xef\x8c\x8a' )
@@ -320,7 +366,9 @@ if [ -n "$git_segment" ]; then
     fi
 fi
 
-# Model — optional
+# Model — optional. It says which model is answering, not how much is left, so
+# it stays with the identity group. Move the three lines into the rseg_* arrays
+# below to park it with the usage meters instead.
 if [ -n "$model_segment" ]; then
     seg_text+=( "${model_segment}" )
     seg_bg+=( "${BG_MODEL}" )
@@ -328,31 +376,33 @@ if [ -n "$model_segment" ]; then
     seg_trailing_fg+=( "\e[38;5;237m" )   # gray-237 fg echoes gray-237 bg (BG_MODEL)
 fi
 
+# --- Right group: the Claude usage meters ---------------------------------
+
 # Context — optional
 if [ -n "$ctx_segment" ]; then
-    seg_text+=( "${ctx_segment}" )
-    seg_bg+=( "${BG_CTX}" )
-    seg_fg+=( "${fg_ctx}" )
-    seg_trailing_fg+=( "\e[38;5;239m" )   # gray-239 fg echoes gray-239 bg (BG_CTX)
+    rseg_text+=( "${ctx_segment}" )
+    rseg_bg+=( "${BG_CTX}" )
+    rseg_fg+=( "${fg_ctx}" )
+    rseg_trailing_fg+=( "\e[38;5;239m" )   # gray-239 fg echoes gray-239 bg (BG_CTX)
 fi
 
 # 5-hour rate limit — optional
 if [ -n "$rate5_segment" ]; then
-    seg_text+=( "${rate5_segment}" )
-    seg_bg+=( "${BG_RATE5}" )
-    seg_fg+=( "${fg_rate5}" )
-    seg_trailing_fg+=( "\e[38;5;241m" )   # gray-241 fg echoes gray-241 bg (BG_RATE5)
+    rseg_text+=( "${rate5_segment}" )
+    rseg_bg+=( "${BG_RATE5}" )
+    rseg_fg+=( "${fg_rate5}" )
+    rseg_trailing_fg+=( "\e[38;5;241m" )   # gray-241 fg echoes gray-241 bg (BG_RATE5)
 fi
 
 # 7-day rate limit — optional
 if [ -n "$rate7_segment" ]; then
-    seg_text+=( "${rate7_segment}" )
-    seg_bg+=( "${BG_RATE7}" )
-    seg_fg+=( "${fg_rate7}" )
-    seg_trailing_fg+=( "\e[38;5;243m" )   # gray-243 fg echoes gray-243 bg (BG_RATE7)
+    rseg_text+=( "${rate7_segment}" )
+    rseg_bg+=( "${BG_RATE7}" )
+    rseg_fg+=( "${fg_rate7}" )
+    rseg_trailing_fg+=( "\e[38;5;243m" )   # gray-243 fg echoes gray-243 bg (BG_RATE7)
 fi
 
-# --- Render ---
+# --- Render the left group ------------------------------------------------
 n="${#seg_text[@]}"
 line=""
 
@@ -369,4 +419,39 @@ done
 # Trailing arrow after the last segment (terminal background, no bg set)
 line="${line}${C_RESET}${seg_trailing_fg[$((n-1))]}${ARROW}${C_RESET}"
 
-printf '%b' "$line"
+# --- Render the right group -----------------------------------------------
+#
+# Mirror image of the loop above. The separator is LEFT_ARROW and it is painted
+# in the colour of the segment it introduces, over the background of whatever
+# sits to its left: the terminal itself for the first one, the previous segment
+# for the rest. That makes each arrow read as that segment's left edge.
+m="${#rseg_text[@]}"
+right=""
+
+for (( j=0; j<m; j++ )); do
+    if [ "$j" -eq 0 ]; then
+        right="${right}${C_RESET}${rseg_trailing_fg[$j]}${LEFT_ARROW}${rseg_bg[$j]}${rseg_fg[$j]} ${rseg_text[$j]} "
+    else
+        right="${right}${rseg_bg[$((j-1))]}${rseg_trailing_fg[$j]}${LEFT_ARROW}${rseg_bg[$j]}${rseg_fg[$j]} ${rseg_text[$j]} "
+    fi
+done
+[ "$m" -gt 0 ] && right="${right}${C_RESET}"
+
+# --- Place the two groups -------------------------------------------------
+#
+# No usage data (a fresh session, or an older Claude Code that does not send
+# rate_limits) means there is no right group at all, so print the left one and
+# stop. Otherwise pad between them, stopping one column short of the edge so a
+# terminal with automatic margins cannot wrap the line. If the two groups do
+# not fit, fall back to a single space: Claude Code truncates, which beats
+# silently wrapping onto a second row.
+if [ "$m" -eq 0 ]; then
+    printf '%b' "$line"
+    exit 0
+fi
+
+cols=$(term_cols)
+gap=$(( cols - 1 - $(visible_width "$line") - $(visible_width "$right") ))
+[ "$gap" -lt 1 ] && gap=1
+
+printf '%b%*s%b' "$line" "$gap" "" "$right"
