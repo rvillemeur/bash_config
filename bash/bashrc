@@ -79,7 +79,10 @@ POWERLINE_ICONS_OVERRIDES=(
   [sep - fin]=$'uE0BD'
 )
 POWERLINE_ICONS=icons-in-terminal
-. ${HOME}/devzone/bash_config/powerline.bash/powerline.bash
+# Repo root, resolved through the ~/.bashrc symlink, so the checkout can live
+# anywhere: ~/.bashrc -> <repo>/bash/bashrc, hence two dirname levels up.
+DOTFILES="$(dirname "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")")"
+. "${DOTFILES}/vendor/powerline.bash/powerline.bash"
 POWERLINE_SEGMENTS="logo ${POWERLINE_SEGMENTS}"
 PROMPT_COMMAND='__exit=$?; history -a; history -c; history -r; __update_ps1 $__exit'
 

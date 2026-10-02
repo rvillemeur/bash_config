@@ -1,9 +1,9 @@
 [submodule "powerline.bash"]
-	path = powerline.bash
+	path = vendor/powerline.bash
 	url = https://gitlab.com/bersace/powerline.bash.git
 [submodule "icons-in-terminal"]
-	path = icons-in-terminal
+	path = vendor/icons-in-terminal
 	url = https://github.com/sebastiencs/icons-in-terminal/
 [submodule "choose"]
-	path = choose
+	path = vendor/choose
 	url = https://github.com/tmonjalo/choose.git
